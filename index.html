@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>✨ 6 Meses de Magia ✨</title>
+    <title>✨ 6 Meses de lo mejol:3✨</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -185,7 +185,7 @@
             color: #ffccdd;
         }
 
-        /* CARTA ESPECIAL - MEJORADA PARA MÓVIL */
+        /* CARTA ESPECIAL - VERSIÓN TOGGLE NORMAL */
         .love-letter {
             background: rgba(0,0,0,0.6);
             backdrop-filter: blur(20px);
@@ -193,10 +193,10 @@
             padding: 1.5rem;
             margin: 3rem 0;
             text-align: center;
-            cursor: pointer;
             transition: all 0.3s;
             border: 1px solid rgba(255,200,200,0.5);
             -webkit-tap-highlight-color: transparent;
+            user-select: none; /* Evita selección de texto al tocar */
         }
 
         .love-letter h3 {
@@ -214,13 +214,13 @@
             font-weight: bold;
             color: #ffe0e7;
             border: 1px solid #ff88aa;
-            pointer-events: none; /* Para que el clic en el contenedor sea el que abra */
+            /* Eliminamos pointer-events: none para que sea clickeable directamente */
         }
 
         .letter-content {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.7s ease-out;
+            transition: max-height 0.6s ease-out;
             font-size: 1rem;
             line-height: 1.5;
             text-align: left;
@@ -228,8 +228,16 @@
         }
 
         .love-letter.open .letter-content {
-            max-height: 800px; /* Suficiente para textos largos */
+            max-height: 800px;
             margin-top: 1rem;
+        }
+
+        /* Indicador visual de que se puede tocar */
+        .love-letter {
+            cursor: pointer;
+        }
+        .love-letter:active {
+            transform: scale(0.99);
         }
 
         .footer {
@@ -263,6 +271,7 @@
             .art-caption { font-size: 0.75rem; }
             .love-letter { padding: 1.2rem; }
             .letter-content { font-size: 0.9rem; }
+            .letter-trigger { font-size: 0.9rem; padding: 0.4rem 1rem; }
         }
     </style>
 </head>
@@ -327,7 +336,7 @@
             <div class="art-card">
                 <img class="art-img" src="img/5.jpg" alt="Recuerdo 5">
                 <div class="art-caption">
-                    <strong>Cuarto mes y quinto :3, Te visitaba casi siempre al instituto dasjdak cuando el guardia me dejaba pasar como si nada y cuando jugábamos más al uno</strong>
+                    <strong>Nuestro cuarto y quinto mes, cuando te visitaba casi siempre al instituto dasjdak cuando el guardia me dejaba pasar como si nada y cuando jugábamos más al uno</strong>
                     <span class="fecha">9 de abril 2026</span>
                 </div>
             </div>
@@ -342,9 +351,9 @@
         <p style="text-align:center; margin-top:1rem; font-size:0.7rem;">Cada imagen guardada en la carpeta img/1.jpg ... img/6.jpg</p>
     </div>
 
-    <!-- CARTA INTERACTIVA CORREGIDA -->
+    <!-- CARTA INTERACTIVA: un toque abre/cierra normalmente -->
     <div class="love-letter" id="loveLetter">
-        <div class="letter-trigger"><i class="fas fa-envelope-open-text"></i> ❤️ Toca o haz clic para leer ❤️</div>
+        <div class="letter-trigger"><i class="fas fa-envelope-open-text"></i> ❤️ Toca para leer nuestra carta ❤️</div>
         <h3>Para ti, en nuestros 6 meses 💌</h3>
         <div class="letter-content">
             <p>Han sido 6 meses llenos de magia, de aprendizaje, de descubrir que el amor no solo se siente, también se construye cada día. Contigo he aprendido que los pequeños detalles son los que más pesan en el corazón. Gracias por cada mensaje, por cada sonrisa, por cada palabra tuya. Me encanta cuando me das cariño, cuando me das besitos, abrazitos. Te juro que te amo y no quiero vivir esto con absolutamente nadie más. Mumumumumu.</p>
@@ -459,14 +468,16 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
     });
     
-    // EVENTO PARA MÓVIL Y PC
+    // ---------- EVENTO TOGGLE SIMPLE (un toque abre, otro toque cierra) ----------
     const letterDiv = document.getElementById('loveLetter');
-    function toggleLetter(e) {
+    // Eliminamos cualquier listener previo usando una función nombrada
+    function toggleCard(e) {
+        // Prevenimos que se active dos veces si hay bubbling (no es necesario, pero por si acaso)
         e.stopPropagation();
         letterDiv.classList.toggle('open');
     }
-    letterDiv.addEventListener('click', toggleLetter);
-    letterDiv.addEventListener('touchstart', toggleLetter); // Para móviles
+    // Solo usamos 'click', que en móviles funciona con un toque normal
+    letterDiv.addEventListener('click', toggleCard);
 </script>
 </body>
 </html>
