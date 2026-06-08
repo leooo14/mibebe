@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>✨ 6 Meses de Magia ✨</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            color: #fff;
+            background: #0a0a2a;
+        }
+
+        /* Canvas 3D de fondo */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            display: block;
+        }
+
+        /* Capa de contenido */
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            backdrop-filter: blur(3px);
+        }
+
+        /* Header con neón */
+        .hero {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeDown 1s ease-out;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.8rem;
+            background: linear-gradient(135deg, #FFB7B2, #FFD6A5, #FDFFB6, #CAFFBF);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: gradientMove 8s ease infinite, textGlow 2s infinite alternate;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            letter-spacing: 1px;
+            margin-top: 0.5rem;
+            text-shadow: 0 0 8px rgba(255,120,160,0.6);
+        }
+
+        .counter {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(16px);
+            border-radius: 50px;
+            padding: 0.6rem 1.8rem;
+            display: inline-block;
+            margin-top: 1.5rem;
+            border: 1px solid rgba(255,200,200,0.4);
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        /* Línea de tiempo */
+        .timeline {
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(12px);
+            border-radius: 48px;
+            padding: 2rem;
+            margin: 3rem 0;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .timeline h2 {
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+        }
+
+        .timeline-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+        .milestone {
+            background: rgba(30,20,50,0.7);
+            border-radius: 28px;
+            padding: 1rem 1.5rem;
+            width: 180px;
+            text-align: center;
+            transition: all 0.3s;
+            border-left: 4px solid #ff88aa;
+        }
+
+        .milestone:hover {
+            transform: translateY(-8px);
+            background: rgba(80,50,100,0.8);
+            box-shadow: 0 0 20px rgba(255,136,170,0.4);
+        }
+
+        .milestone .day {
+            font-size: 1.9rem;
+            font-weight: bold;
+            color: #ffb7b2;
+        }
+
+        /* Galería de imágenes (fijas) */
+        .gallery {
+            margin: 4rem 0;
+        }
+
+        .gallery h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 2rem;
+        }
+
+        .art-card {
+            background: rgba(20,20,40,0.5);
+            backdrop-filter: blur(12px);
+            border-radius: 32px;
+            overflow: hidden;
+            transition: all 0.4s;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .art-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: #ff88aa;
+            box-shadow: 0 20px 30px -10px black;
+        }
+
+        .art-img {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .art-card:hover .art-img {
+            transform: scale(1.05);
+        }
+
+        .art-caption {
+            padding: 1rem;
+            text-align: center;
+            font-weight: 500;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Carta especial */
+        .love-letter {
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(20px);
+            border-radius: 48px;
+            padding: 2rem;
+            margin: 3rem 0;
+            text-align: center;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid rgba(255,200,200,0.5);
+        }
+
+        .love-letter h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .letter-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.6s ease-out;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        .love-letter.open .letter-content {
+            max-height: 300px;
+            margin-top: 1rem;
+        }
+
+        .letter-trigger {
+            background: #ff88aa30;
+            display: inline-block;
+            padding: 0.4rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* footer */
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 1rem;
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-40px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%;}
+            50% { background-position: 100% 50%;}
+            100% { background-position: 0% 50%;}
+        }
+
+        @keyframes textGlow {
+            from { text-shadow: 0 0 2px #ff9a9e;}
+            to { text-shadow: 0 0 20px #ff6a88, 0 0 8px #ffb3c6;}
+        }
+
+        @media (max-width: 700px) {
+            .hero h1 { font-size: 2.2rem; }
+            .milestone { width: 140px; }
+        }
+        .fecha {
+    display: inline-block;
+    background: rgba(255,136,170,0.3);
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    margin-top: 0.4rem;
+    font-weight: 600;
+    color: #ffccdd;
+    letter-spacing: 0.5px;
+}
+    </style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<div class="container">
+    <div class="hero">
+        <h1>✦ Nuestro pequeño universo ✦</h1>
+        <p>6 meses de sonrisas, aprendizaje y amor infinito</p>
+        <div class="counter">
+            <i class="fas fa-heart" style="color: #ff88aa;"></i> 
+            8 diciembre 2025 — 8 junio 2026 · 6 meses ❤️
+        </div>
+    </div>
+
+    <!-- Línea de tiempo con recuerdos simbólicos -->
+    <div class="timeline">
+        <h2><i class="fas fa-star-of-life"></i> Momentos que atesoro <i class="fas fa-star-of-life"></i></h2>
+        <div class="timeline-grid">
+            <div class="milestone"><span class="day">Día 1</span><br>Tan hermosa te veias ese dia, y gracias por pedirme internet</div>
+            <div class="milestone"><span class="day">1 mes</span><br>Eres la mejor novia del mundo mundial, estoy encantado contigo y todo lo que me haces sentir:3</div>
+            <div class="milestone"><span class="day">2 meses</span><br>Aunque sean pocos 2 meses, me encanto vivirlos contigo y ver tu hermosa carita :p</div>
+            <div class="milestone"><span class="day">3 meses</span><br> Cuando mas que todo parabamo saliendo pero se que ahora no puedes tanto por el instituto mi bebe</div>
+            <div class="milestone"><span class="day">4 meses</span><br> Hubieron peleitas pero gracias por soportarme jskdks</div>
+            <div class="milestone"><span class="day">5 meses</span><br>Cuando me ayudabas con mis practicas y hablabas por mi jdakds y jose luis veia eso y tambien jugabamos uno con el, gracias por tomarte esa confianza, te amo </div>
+            <div class="milestone"><span class="day">6 meses</span><br>No se como paso rapido los 6 meses pero me encanta, y que sean infinitos meses mas</div>
+        </div>
+    </div>
+
+    <!-- Galería de imágenes (cambia las URLs aquí abajo) -->
+    <div class="gallery">
+        <h2><i class="fas fa-images"></i> Nuestros recuerditos</h2>
+        <div class="gallery-grid" id="galleryGrid">
+            <!-- Cada imagen: reemplaza src con tu propia imagen (puedes subirlas a Imgur o usar locales) -->
+            <div class="gallery-grid" id="galleryGrid">
+    <div class="art-card">
+        <img class="art-img" src="img/1.jpg" alt="Recuerdo 1">
+        <div class="art-caption">
+            <strong>El comienzo de todo</strong><br>
+            <span class="fecha">8 de diciembre 2025</span>
+        </div>
+    </div>
+    <div class="art-card">
+        <img class="art-img" src="img/2.jpg" alt="Recuerdo 2">
+        <div class="art-caption">
+            <strong>que rico te salio lo que me hicite, y nuestro primer mes mi amor</strong> <br>
+            <span class="fecha">10 de enero 2026</span>
+        </div>
+    </div>
+    <div class="art-card">
+        <img class="art-img" src="img/3.jpg" alt="Recuerdo 3">
+        <div class="art-caption">
+            <strong>Nuestro segundo mes, cuando teniamos las PULSERA BATA, se que no tuvieron buen final pero gracias por compartilas conmigo tesorito</strong> 🏞️<br>
+            <span class="fecha">19 de febrero 2026</span>
+        </div>
+    </div>
+    <div class="art-card">
+        <img class="art-img" src="img/4.jpg" alt="Recuerdo 4">
+        <div class="art-caption">
+            <strong>Nuestro cuarto mes, cuando salimos con Mariiii, y también me diste ese hermoso cofre de Clash, te adoro </strong> <br>
+            <span class="fecha">23 de marzo 2026</span>
+        </div>
+    </div>
+    <div class="art-card">
+        <img class="art-img" src="img/5.jpg" alt="Recuerdo 5">
+        <div class="art-caption">
+            <strong>Te visitaba casi siempre al instituto dasjdak cuando el guardia me dejaba pasar como si naita y cuando jugabamos ma al uno</strong> <br>
+            <span class="fecha">9 de abril 2026</span>
+        </div>
+    </div>
+    <div class="art-card">
+        <img class="art-img" src="img/6.jpg" alt="Recuerdo 6">
+        <div class="art-caption">
+            <strong>Que te puedo decir, no se como pasaron tan rápido 6 meses, me gusto mucho estar contigo en los cumpleaños que me invitaron, te amo mucho:3</strong> <br>
+            <span class="fecha">20 de mayo 2026</span>
+        </div>
+    </div>
+</div>
+        </div>
+        <p style="text-align:center; margin-top:1rem; font-size:0.8rem;">⬇️ (Puedes cambiar estas imágenes editando el código, son solo ejemplos) ⬇️</p>
+    </div>
+
+    <!-- Carta interactiva -->
+    <div class="love-letter" id="loveLetter">
+        <div class="letter-trigger"><i class="fas fa-envelope-open-text"></i> Toca o haz clic para leer:3</div>
+        <h3>Para ti, en nuestros 6 meses 💌</h3>
+        <div class="letter-content">
+            <p>Han sido 6 meses llenos de magia, de aprendizaje, de descubrir que el amor no solo se siente, también se construye cada día. Contigo he aprendido que los pequeños detalles son los que más pesan en el corazón. Gracias por cada mensaje,por cada sonrisa, por cada palabra tuya, me
+                encanta cuando me das cariño, cuando me das besitos, abrazitos, te juro que te amo y no quiero vivir esto con abosultamente nadie mas, mumumumumu. </p>
+            <p>Esta página es un universo hecho de momentos, y aunque no se algo tan bonito espero te guste Sandrita, salud, por mas recuerdos que se nos vienen, y por cada mirada de nosotros llena de alegria <br> 🌟 <strong>Felices 6 meses, amor mío.</strong> 🌟</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <i class="fas fa-infinity"></i> Hecho con todo mi corazón para ti · 6 meses y hasta que la muerte nos separe <i class="fas fa-heart"></i>
+    </div>
+</div>
+
+<!-- Script del fondo 3D ultra reactivo -->
+<script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
+        }
+    }
+</script>
+
+<script type="module">
+    import * as THREE from 'three';
+
+    const canvas = document.getElementById('bg-canvas');
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: false });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x050510);
+    scene.fog = new THREE.FogExp2(0x050510, 0.0007);
+
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 1.5, 12);
+
+    const particleCount = 2200;
+    const geom = new THREE.BufferGeometry();
+    const positions = new Float32Array(particleCount * 3);
+    const colors = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount; i++) {
+        // forma de espiral toroidal irregular
+        const t = Math.random() * Math.PI * 2;
+        const r = 5 * Math.sqrt(Math.random());
+        const x = Math.sin(t * 5) * r * 0.8;
+        const y = Math.cos(t * 3) * r * 0.6;
+        const z = Math.sin(t * 2) * r * 1.2;
+        positions[i*3] = x * 1.2;
+        positions[i*3+1] = y * 1.5;
+        positions[i*3+2] = z * 1.8 - 2;
+        
+        const col = new THREE.Color().setHSL(0.65 + Math.random() * 0.2, 0.9, 0.6);
+        colors[i*3] = col.r;
+        colors[i*3+1] = col.g;
+        colors[i*3+2] = col.b;
+    }
+    geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geom.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    const particleMat = new THREE.PointsMaterial({ size: 0.11, vertexColors: true, blending: THREE.AdditiveBlending });
+    const particles = new THREE.Points(geom, particleMat);
+    scene.add(particles);
+
+    // Anillo central giratorio con luz
+    const ringGeo = new THREE.TorusGeometry(2.8, 0.06, 128, 400);
+    const ringMat = new THREE.MeshStandardMaterial({ color: 0xff77aa, emissive: 0x441133, metalness: 0.7 });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    scene.add(ring);
+    
+    const ring2Geo = new THREE.TorusGeometry(3.5, 0.03, 128, 400);
+    const ringMat2 = new THREE.MeshStandardMaterial({ color: 0x88aaff, emissive: 0x224466, metalness: 0.9 });
+    const ring2 = new THREE.Mesh(ring2Geo, ringMat2);
+    scene.add(ring2);
+
+    // Luces
+    const ambient = new THREE.AmbientLight(0x222222);
+    scene.add(ambient);
+    const light1 = new THREE.PointLight(0xff66aa, 1, 25);
+    light1.position.set(2, 3, 4);
+    scene.add(light1);
+    const light2 = new THREE.PointLight(0x44aaff, 0.8);
+    light2.position.set(-2, 1, 5);
+    scene.add(light2);
+    
+    let mouseX = 0, mouseY = 0;
+    window.addEventListener('mousemove', (e) => {
+        mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+        mouseY = (e.clientY / window.innerHeight) * 2 - 1;
+    });
+    
+    let time = 0;
+    function animate() {
+        requestAnimationFrame(animate);
+        time += 0.01;
+        
+        // Movimiento orgánico de partículas: rotación y pulsación
+        particles.rotation.x += (mouseY * 0.3 - particles.rotation.x) * 0.04;
+        particles.rotation.y += (mouseX * 0.5 - particles.rotation.y) * 0.04;
+        particleMat.size = 0.11 + Math.sin(time * 4) * 0.02;
+        
+        ring.rotation.x = Math.sin(time * 0.6) * 0.4;
+        ring.rotation.y = time * 0.4;
+        ring.rotation.z = Math.cos(time * 0.7) * 0.2;
+        ring2.rotation.x = Math.cos(time * 0.5) * 0.3;
+        ring2.rotation.y = time * 0.6;
+        
+        camera.position.x += (mouseX * 0.4 - camera.position.x) * 0.03;
+        camera.position.y += (-mouseY * 0.2 - camera.position.y) * 0.03;
+        camera.lookAt(0, 0, 0);
+        
+        renderer.render(scene, camera);
+    }
+    animate();
+    
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+    
+    const letterDiv = document.getElementById('loveLetter');
+    letterDiv.addEventListener('click', () => {
+        letterDiv.classList.toggle('open');
+    });
+</script>
+</body>
+</html>
